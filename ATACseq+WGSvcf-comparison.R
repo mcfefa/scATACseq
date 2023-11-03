@@ -59,11 +59,21 @@ peakFromFile <- readPeakFile(pth2peaks_bed)
 peaks.gr <- peakFromFile
 
 ##### To inspect peak coverage along the chromosomes:
-covplot(peaks.gr, chrs=c("chr14", "chr15")). ####<----------
+library('labeling', lib="~/Dropbox (UFL)/GitHub/scATACseq/lib")
+covplot(peaks.gr, chrs=c("chr14", "chr15")) ####<----------
+## Errored needing a package "labeling", so ran: install.packages("labeling", lib="~/Dropbox (UFL)/GitHub/scATACseq/lib")
 
 #to save the image to file
-pdf("./results/PeakCoverage.pdf")
-covplot(peaks.gr, chrs=c("chr14", "chr15"))
+pdf("./results/PeakCoverage_chr1-8.pdf")
+covplot(peaks.gr, chrs=c("chr1", "chr2", "chr3", "chr4", "chr5", "chr6","chr7","chr8"))
+dev.off()
+
+pdf("./results/PeakCoverage_chr9-16.pdf")
+covplot(peaks.gr, chrs=c("chr9", "chr10", "chr11", "chr12", "chr13", "chr14","chr15","chr16"))
+dev.off()
+
+pdf("./results/PeakCoverage_chr17-X.pdf")
+covplot(peaks.gr, chrs=c("chr17", "chr18", "chr19", "chr20", "chr21", "chr22","chrX"))
 dev.off()
 
 ##### Peak Annotation
