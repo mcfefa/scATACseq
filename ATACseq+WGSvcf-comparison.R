@@ -21,6 +21,11 @@ BiocManager::install('TxDb.Hsapiens.UCSC.hg38.knownGene', lib="~/Dropbox (UFL)/G
 ## load packages
 library('BiocManager', lib="~/Dropbox (UFL)/GitHub/scATACseq/lib")
 
+library('farver', lib="~/Dropbox (UFL)/GitHub/scATACseq/lib")
+library('ChIPseeker', lib="~/Dropbox (UFL)/GitHub/scATACseq/lib")
+## to address error when loading, had to run: install.packages("memoise")
+## to address error when loading, had to run: BiocManager::install("TxDb.Hsapiens.UCSC.hg19.knownGene", lib="~/Dropbox (UFL)/GitHub/scATACseq/lib")
+
 library('GenomicAlignments', lib="~/Dropbox (UFL)/GitHub/scATACseq/lib")
 library('GenomicFeatures', lib="~/Dropbox (UFL)/GitHub/scATACseq/lib")
 library('biomaRt', lib="~/Dropbox (UFL)/GitHub/scATACseq/lib")
@@ -28,7 +33,6 @@ library('org.Hs.eg.db', lib="~/Dropbox (UFL)/GitHub/scATACseq/lib")
 library('TxDb.Hsapiens.UCSC.hg38.knownGene', lib="~/Dropbox (UFL)/GitHub/scATACseq/lib")
 library('purrr', lib="~/Dropbox (UFL)/GitHub/scATACseq/lib")
 library('withr', lib="~/Dropbox (UFL)/GitHub/scATACseq/lib")
-library('farver', lib="~/Dropbox (UFL)/GitHub/scATACseq/lib")
 library('clusterProfiler', lib="~/Dropbox (UFL)/GitHub/scATACseq/lib")
 ## to address error when loading, had to run: install.packages("withr", lib="~/Dropbox (UFL)/GitHub/scATACseq/lib")
 ## to address error when loading, had to run: BiocManager::install("MPO.db", lib="~/Dropbox (UFL)/GitHub/scATACseq/lib")
@@ -41,9 +45,6 @@ library('ReactomePA', lib="~/Dropbox (UFL)/GitHub/scATACseq/lib")
 ## to address error when loading, had to run: install.packages("purrr", lib="~/Dropbox (UFL)/GitHub/scATACseq/lib")
 ## to address error when loading, had to run: BiocManager::install("reactome.db", lib="~/Dropbox (UFL)/GitHub/scATACseq/lib")
 library('TxDb.Hsapiens.UCSC.hg19.knownGene', lib="~/Dropbox (UFL)/GitHub/scATACseq/lib")
-library('ChIPseeker', lib="~/Dropbox (UFL)/GitHub/scATACseq/lib")
-## to address error when loading, had to run: install.packages("memoise")
-## to address error when loading, had to run: BiocManager::install("TxDb.Hsapiens.UCSC.hg19.knownGene", lib="~/Dropbox (UFL)/GitHub/scATACseq/lib")
 
 ## Pipeline
 txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
@@ -60,28 +61,28 @@ peaks.gr <- peakFromFile
 
 ##### To inspect peak coverage along the chromosomes:
 library('labeling', lib="~/Dropbox (UFL)/GitHub/scATACseq/lib")
-covplot(peaks.gr, chrs=c("chr14", "chr15")) ####<----------
+covplot(peaks.gr, chrs=c("chr14", "chr15")) 
 ## Errored needing a package "labeling", so ran: install.packages("labeling", lib="~/Dropbox (UFL)/GitHub/scATACseq/lib")
 
 #to save the image to file
-pdf("./results/PeakCoverage_chr1-8.pdf")
+pdf("./results/PeakCoverage_chr1-8_2023-11-05.pdf")
 covplot(peaks.gr, chrs=c("chr1", "chr2", "chr3", "chr4", "chr5", "chr6","chr7","chr8"))
 dev.off()
 
-pdf("./results/PeakCoverage_chr9-16.pdf")
+pdf("./results/PeakCoverage_chr9-16_2023-11-05.pdf")
 covplot(peaks.gr, chrs=c("chr9", "chr10", "chr11", "chr12", "chr13", "chr14","chr15","chr16"))
 dev.off()
 
-pdf("./results/PeakCoverage_chr17-X.pdf")
+pdf("./results/PeakCoverage_chr17-X_2023-11-05.pdf")
 covplot(peaks.gr, chrs=c("chr17", "chr18", "chr19", "chr20", "chr21", "chr22","chrX"))
 dev.off()
 
-##### Peak Annotation
+##### Peak Annotation ####<----------
 bed.annot = annotatePeak(peaks.gr, tssRegion=c(-3000, 3000),TxDb=txdb, annoDb="org.Hs.eg.db")
 
 annot_peaks=as.data.frame(bed.annot)
 
-write.table(annot_peaks, "./results/HSC_merged_annotated.txt",
+write.table(annot_peaks, "./results/HSC_merged_annotated_2023-11-05.txt",
             append = FALSE,
             quote = FALSE,
             sep = "\t",
@@ -90,9 +91,17 @@ write.table(annot_peaks, "./results/HSC_merged_annotated.txt",
             fileEncoding = "")
 
 library('ggupset', lib="~/Dropbox (UFL)/GitHub/scATACseq/lib")
-pdf("./results/AnnotVis.pdf")
+pdf("./results/AnnotVis_2023-11-05.pdf")
 upsetplot(bed.annot, vennpie=TRUE)
 dev.off()
 ## Errored needing a package "ggupset", so ran: install.packages("ggupset", lib="~/Dropbox (UFL)/GitHub/scATACseq/lib")
+
+## Distribution of loci with respect to TSS:
+pdf("TSSdist_2023-11-05.pdf")
+plotDistToTSS(bed.annot, title="Distribution of ATAC-seq peaks loci\nrelative to TSS")
+dev.off()
+
+##### Functional Analysis ####
+
 
 
