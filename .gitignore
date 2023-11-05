@@ -4,3 +4,4 @@ lib/
 data/.DS_Store
 .DS_Store
 data/GSE96769-single-cell/GSE96769_PeakFile_20160207.bed
+results/HSC_merged_annotated.txt

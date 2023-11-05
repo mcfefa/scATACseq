@@ -89,8 +89,10 @@ write.table(annot_peaks, "./results/HSC_merged_annotated.txt",
             col.names = TRUE,
             fileEncoding = "")
 
+library('ggupset', lib="~/Dropbox (UFL)/GitHub/scATACseq/lib")
 pdf("./results/AnnotVis.pdf")
 upsetplot(bed.annot, vennpie=TRUE)
 dev.off()
+## Errored needing a package "ggupset", so ran: install.packages("ggupset", lib="~/Dropbox (UFL)/GitHub/scATACseq/lib")
 
 
