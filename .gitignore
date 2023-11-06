@@ -6,3 +6,4 @@ data/.DS_Store
 data/GSE96769-single-cell/GSE96769_PeakFile_20160207.bed
 results/HSC_merged_annotated.txt
 results/HSC_merged_annotated_2023-11-05.txt
+results/HSC_merged_annotated_hg19_2023-11-06.txt
