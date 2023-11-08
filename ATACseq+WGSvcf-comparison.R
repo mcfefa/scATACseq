@@ -51,6 +51,8 @@ txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene
 
 ##### Read in BED file #####################################
 pth2peaks_bed="./data/GSE96769-single-cell/GSE96769_PeakFile_20160207.bed.gz"
+## genome aligned to hg19 
+
 ## below didn't work, so followed along with command from: https://bioconductor.org/packages/devel/bioc/vignettes/ChIPseeker/inst/doc/ChIPseeker.html#chip-profiling
 #peaks.bed=read.table(pth2peaks_bed, sep="\t", header=FALSE, blank.lines.skip=TRUE, fill=TRUE)
 #rownames(peaks.bed)=peaks.bed[,4]
@@ -164,4 +166,22 @@ dev.off()
 # 
 
 
+### Comparison with published vcf variants
+vcfFile <- "./data/12 MDS with VAF more 0.02.csv"
+readVCFfile <- read.csv(vcfFile)
 
+geneOverlap <- intersect(annot_peaks_hg19$SYMBOL, readVCFfile$Gene.Name)
+dim(readVCFfile)
+# [1] 1032894      14
+dim(annot_peaks_hg19)
+# [1] 491437     28
+
+annot_peaks_hg19_overlap <- annot_peaks_hg19[annot_peaks_hg19$SYMBOL %in% geneOverlap, ]
+dim(annot_peaks_hg19_overlap)
+# [1] 81644    28
+### Fraction of all peaks -- 0.079043
+
+readVCFfile_overlap <- readVCFfile[readVCFfile$Gene.Name %in% geneOverlap, ]
+dim(readVCFfile_overlap)
+# [1] 2440   14
+### Fraction of all SNPs -- 0.002362
