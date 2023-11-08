@@ -169,6 +169,7 @@ dev.off()
 ### Comparison with published vcf variants
 vcfFile <- "./data/12 MDS with VAF more 0.02.csv"
 readVCFfile <- read.csv(vcfFile)
+## genome aligned to GRCh37
 
 geneOverlap <- intersect(annot_peaks_hg19$SYMBOL, readVCFfile$Gene.Name)
 dim(readVCFfile)
@@ -185,3 +186,76 @@ readVCFfile_overlap <- readVCFfile[readVCFfile$Gene.Name %in% geneOverlap, ]
 dim(readVCFfile_overlap)
 # [1] 2440   14
 ### Fraction of all SNPs -- 0.002362
+
+##### COMPARISON WITH OTHER DATASET
+## genome aligned to hg19
+pth2peaks_bed_H1ESC="./data/GSE65360/GSE65360_single-H1ESC.peaks.bed.gz"
+H1ESC_peaksgr <- readPeakFile(pth2peaks_bed_H1ESC, header=FALSE)
+
+#to save the image to file
+pdf("./results/H1ESC_PeakCoverage_chr1-8_2023-11-08.pdf")
+covplot(H1ESC_peaksgr, chrs=c("chr1", "chr2", "chr3", "chr4", "chr5", "chr6","chr7","chr8"))
+dev.off()
+
+pdf("./results/H1ESC_PeakCoverage_chr9-16_2023-11-08.pdf")
+covplot(H1ESC_peaksgr, chrs=c("chr9", "chr10", "chr11", "chr12", "chr13", "chr14","chr15","chr16"))
+dev.off()
+
+pdf("./results/H1ESC_PeakCoverage_chr17-X_2023-11-08.pdf")
+covplot(H1ESC_peaksgr, chrs=c("chr17", "chr18", "chr19", "chr20", "chr21", "chr22","chrX"))
+dev.off()
+
+saveRDS(H1ESC_peaksgr, "./results/H1ESC_peaksgr_formalClassGRanges-object_2023-11-08.rds")
+
+##### Peak Annotation 
+H1ESC_peaksgr_annot_hg19 = annotatePeak(H1ESC_peaksgr, tssRegion=c(-3000, 3000),TxDb=txdb, annoDb="org.Hs.eg.db")
+
+H1ESC_peaksgr_annot_peaks_hg19=as.data.frame(H1ESC_peaksgr_annot_hg19)
+
+write.table(H1ESC_peaksgr_annot_peaks_hg19, "./results/H1ESC_merged_annotated_hg19_2023-11-08.txt",
+            append = FALSE,
+            quote = FALSE,
+            sep = "\t",
+            row.names = FALSE,
+            col.names = TRUE,
+            fileEncoding = "")
+
+saveRDS(H1ESC_peaksgr_annot_hg19, "./results/H1ESC_peaksgr_annot_hg19_csAnno-object_2023-11-08.rds")
+saveRDS(H1ESC_peaksgr_annot_peaks_hg19, "./results/H1ESC_peaksgr_annot_peaks_hg19_DataFrame_2023-11-08.rds")
+
+## upsetplot still doesn't work for alternative 
+# pdf("./results/H1ESC_AnnotVis_2023-11-08.pdf")
+# upsetplot(H1ESC_peaksgr_annot_hg19, vennpie=TRUE)
+# dev.off()
+
+pdf("./results/H1ESC_Vis_AnnoPie_2023-11-08.pdf")
+plotAnnoPie(H1ESC_peaksgr_annot_hg19)
+dev.off()
+
+pdf("./results/H1ESC_Vis_vennpie_2023-11-08.pdf")
+vennpie(H1ESC_peaksgr_annot_hg19)
+dev.off()
+
+pdf("./results/H1ESC_Vis_plotAnnoBar_2023-11-08.pdf")
+plotAnnoBar(H1ESC_peaksgr_annot_hg19)
+dev.off()
+
+geneOverlap_H1ESC <- intersect(H1ESC_peaksgr_annot_peaks_hg19$SYMBOL, readVCFfile$Gene.Name)
+dim(readVCFfile)
+# [1] 1032894      14
+dim(H1ESC_peaksgr_annot_peaks_hg19)
+# [1] 50000    17
+
+H1ESC_peaksgr_annot_peaks_hg19_overlap <- H1ESC_peaksgr_annot_peaks_hg19[H1ESC_peaksgr_annot_peaks_hg19$SYMBOL %in% geneOverlap_H1ESC, ]
+dim(H1ESC_peaksgr_annot_peaks_hg19_overlap)
+# [1] 8106   17
+### Fraction of all peaks -- 0.16212
+
+readVCFfile_overlap_H1ESC <- readVCFfile[readVCFfile$Gene.Name %in% geneOverlap_H1ESC, ]
+dim(readVCFfile_overlap_H1ESC)
+# [1] 2260   14
+### Fraction of all SNPs -- 0.002188
+
+
+
+
